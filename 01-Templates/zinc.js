@@ -1,53 +1,32 @@
 'use strict';
-
 /* eslint-env browser */
-
 (() => {
     function populateList(results) {
-        //console.log(results); // eslint-disable-line no-console
+        
+        for (let result in results) {        
+            renderTemplate(results[result])
+        }   
+    }
+    
+    function renderTemplate(result) {
 
-        let div = document.createElement('div');
-        document.body.appendChild(div);
-        div.setAttribute('class','container');
+        let template = `<li class="user">
+        <img class="user-photo" src="{{ picture.large }}" alt="Photo of {{ name.first }} {{ name.last }}">
+        <div class="user-name">{{ name.first }} {{ name.last }}</div>
+        <div class="user-location">{{ location.city }}, {{ location.state }}</div>
+        <div class="user-email">{{ email }}</div>
+    </li>`;
+   
+    //let a = template.replace(/{{results.picture.large}}/g, `${results.picture.large}`);
+    
+    let str = template.replace(/\{\{\s*(.*?)\s*\}\}/g,(match,p1)=> p1.split('.').reduce(function(acc, current) {
+       acc + current;
+       return acc[current];
+     },result)
+     ); 
 
-        let H1 = document.createElement('h1');
-        div.appendChild(H1);
-        H1.innerText = 'USER LIST'
-
-        for (let i in results) {
-            let newUl = document.createElement("ul");
-            newUl.setAttribute('class', 'user-list');
-            newUl.setAttribute('id', 'z-user-list');
-            div.appendChild(newUl);
-
-            let newli = document.createElement("li");
-            newli.setAttribute('class', 'user');
-            newUl.appendChild(newli);
-
-            let image = document.createElement('img');
-            image.setAttribute('class','user-photo');
-            image.setAttribute('src',results[i].picture.large);
-            newli.appendChild(image);
-
-            let div1 = document.createElement('div');
-            newli.appendChild(div1);
-            div1.setAttribute('class', 'user-name');
-            div1.innerText = results[i].name.first +' '+ results[i].name.last;
-
-            let div2 = document.createElement('div');
-            newli.appendChild(div2);
-            div2.setAttribute('class','user-location');
-            div2.innerHTML = results[i].location.city +' , ' + results[i].location.state;
-
-            let div3 = document.createElement('div');
-            newli.appendChild(div3);
-            div3.setAttribute("class","user-email");
-            div3.innerText = results[i].email;
-
-
-
-        }
-
+    let ul = document.getElementById('z-user-list');
+    ul.insertAdjacentHTML('beforeend',str);
     }
 
     function init() {
