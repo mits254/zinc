@@ -4,6 +4,7 @@
 /* globals Zinc */
 
 (() => {
+
     const userData = {
         picture: {
             thumbnail: 'https://f4.bcbits.com/img/0001142378_10.jpg'
@@ -18,4 +19,10 @@
         },
         email: 'jack.burton@example.com'
     };
+
+    // let elementName = document.querySelector('user-item');
+
+    Zinc.registerComponent('user-item', 'user',userData)
 })();
+
+
