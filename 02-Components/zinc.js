@@ -1,7 +1,8 @@
 const Zinc = {};
-
 (() => {
-    function renderTemplate(templateFile, dataObject) {
+    document.addEventListener('DOMContentLoaded', init);
+    
+    function renderComponent(templateFile, dataObject) {
         return fetch(`${templateFile}.html`)
             .then(res => res.text())
             .then((template) => {
@@ -15,7 +16,7 @@ const Zinc = {};
 
     Zinc.registerComponent = function (elementName, templateFile, dataObject) {
         let element = document.querySelector(elementName);
-        renderTemplate(templateFile, dataObject)
+        renderComponent(templateFile, dataObject)
             .then((result) => {
                 console.log(result);
                 element.insertAdjacentHTML('beforeend', result);
@@ -23,8 +24,20 @@ const Zinc = {};
     }
 
     function init() {
+        fetch('https://randomuser.me/api/?results=5')
+            .then(res => res.json())
+            .then(res=> {
+                 res.results.forEach(result => {
+                    Zinc.registerComponent('user-item', 'user', result);
+                 });
+                    
+                 
+            });
+    
+
+
 
     }
 
-    document.addEventListener('DOMContentLoaded', init);
+    
 })();

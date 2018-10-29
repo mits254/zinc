@@ -22,7 +22,7 @@
 
     // let elementName = document.querySelector('user-item');
 
-    Zinc.registerComponent('user-item', 'user',userData)
+    //Zinc.registerComponent('user-item', 'user',userData)
 })();
 
 
