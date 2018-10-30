@@ -1,43 +1,58 @@
-const Zinc = {};
+const Zinc = {
+    components:{}
+};
 (() => {
-    document.addEventListener('DOMContentLoaded', init);
     
-    function renderComponent(templateFile, dataObject) {
-        return fetch(`${templateFile}.html`)
+    Zinc.registerComponent = function (elementName, templateFile, data) {
+        console.log('registerComponent is called')
+        Zinc.components[elementName] = {
+            elementName,
+            templateFile,
+            data
+        };
+        renderComponent(elementName, templateFile, data)
+    }
+
+    function renderTemplate(template, data) {
+        console.log('renderTemplate is called -3')
+        return fetch(`${template}.html`)
             .then(res => res.text())
-            .then((template) => {
-                return template.replace(/\{\{\s*(.*?)\s*\}\}/g, (match, p1) => p1.split('.').reduce(function (acc, current) {
-                    acc + current;
+            .then((html) => {
+                return html.replace(/\{\{\s*(.*?)\s*\}\}/g, (match, p1) => p1.split('.').reduce(function (acc, current) {
+                    
                     return acc[current];
-                }, dataObject)
+                }, data)
                 );
             })
     }
 
-    Zinc.registerComponent = function (elementName, templateFile, dataObject) {
-        let element = document.querySelector(elementName);
-        renderComponent(templateFile, dataObject)
-            .then((result) => {
-                console.log(result);
-                element.insertAdjacentHTML('beforeend', result);
-            })
+    function renderComponent(element, templateFile, content) {
+        console.log('renderComponent is called -2')
+        const nodeList = document.querySelectorAll(element);
+        console.log(element)
+        for (let i = 0; i < nodeList.length; i++) {
+            renderTemplate(templateFile, content)
+                .then(html => nodeList[i].insertAdjacentHTML('beforeend', html));
+        }
     }
+
+    // function renderComponents() {
+    //     console.log('renderComponents is called-1')
+    //     console.log('this is Zinc :',Zinc.components)
+    //      Object.values(Zinc.components).forEach((component) => {
+            
+    //         //renderComponent(component.elementName, component.templateFile, component.data);
+    //     });
+        
+    // }
+
+
 
     function init() {
-        fetch('https://randomuser.me/api/?results=5')
-            .then(res => res.json())
-            .then(res=> {
-                 res.results.forEach(result => {
-                    Zinc.registerComponent('user-item', 'user', result);
-                 });
-                    
-                 
-            });
-    
-
-
+        // renderComponents();
 
     }
+    document.addEventListener('DOMContentLoaded', init);
 
-    
+
 })();
